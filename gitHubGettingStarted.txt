@@ -1,0 +1,18 @@
+GitHub Commands
+
+git config --global user.name "my username"
+git config --global user.email "my email"
+
+1) git clone [GitHub repository name]
+2)git status 
+3) git add
+get add . or git add -A for everything in a directory
+4) git commit -m "what I did"
+5) git push (pushes it to the cloooooud)
+6) git pull
+
+Git setup
+1) Create an account
+2) Download GitHub for your computer
+3) Open a command window
+
