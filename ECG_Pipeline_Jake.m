@@ -10,13 +10,13 @@ updateTables
 
 updateECG
 
-ECG_preProc('filePath', 'C:\Users\bikson\Desktop\taVNS scripts\subjData\', 'skip',false,'startName','TV_11_07')
+ECG_preProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false,'startName','TV_11_07')
 %% heart rate picking for the five blocks^
-breath_preProc('filePath', 'C:\Users\bikson\Desktop\taVNS scripts\subjData\', 'skip',false,'startName','TV_01_01')
+breath_preProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false)
 %%resperation picking for the five blocks^
-ECGbaselinePreProc('filePath', 'C:\Users\bikson\Desktop\taVNS scripts\subjData\', 'skip',false,'startName','TV_27_04')
+ECGbaselinePreProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false,'startName','TV_27_04')
 %% heart rate for baseline^
-breathBaselinePreProc('filePath', 'C:\Users\bikson\Desktop\taVNS scripts\subjData\', 'skip',false,'startName','TV_27_08')
+breathBaselinePreProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false,'startName','TV_27_08')
 %% Run Stats
 
 Hr_Stats()
