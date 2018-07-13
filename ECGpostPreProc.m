@@ -21,7 +21,7 @@ function ECGpostPreProc(varargin)
 %% Input Parameters
 p = inputParser;
 
-defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\NI\subjData\';
+defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\subjData\';
 defaultStart= 1;
 defaultSkip = true;
 defaultStartName = '';

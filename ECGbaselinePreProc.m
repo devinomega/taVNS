@@ -1,7 +1,7 @@
 function ECGbaselinePreProc(varargin)
 %% ECG_preProc
 %
-% Process .cnt files and extract peaks for all blocks baseline
+% Process .cnt files and extract peaks for all blocks, pre, stim, post
 %
 % Input:
 %       startPnt - where to start the processing (num)
@@ -21,7 +21,7 @@ function ECGbaselinePreProc(varargin)
 %% Input Parameters
 p = inputParser;
 
-defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\NI\tempSubj\';
+defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\subjData\';
 defaultStart= 1;
 defaultSkip = true;
 defaultStartName = '';
@@ -91,7 +91,7 @@ for i = z:numel(fFiles)
         tmp = load(curMat,'ECG');
         if isfield(tmp, 'ECG')
             ECG=tmp.ECG;
-            if isfield(tmp.ECG,'baseLineData')
+            if isfield(tmp.ECG,'baseline')
                 if skip
                     continue
                 else
@@ -112,23 +112,30 @@ for i = z:numel(fFiles)
             if strcmp(rsp, 'Next')
                 continue
             elseif strcmp(rsp, 'Quit')
-               break
+                break
             end
         end
     end
     
-    data =  pop_loadeep_v4([fPath curSubj]);   %load their eeg data
+    data = pop_loadeep_v4([fPath curSubj]);   %load their eeg data
     
     if ~isempty(data.event)
         % From pre
         baseLine = [data.event(~cellfun(@isempty,regexp({data.event.type}, ...
-            '96'))).latency];   %something may go wrong here if they don't have 96
+            '111'))).latency];   %something may go wrong here if they don't have 96
         
         %Data
         curData = double(data.data(33,:)); %Raw ECG
-        ECG.baseLineData = curData(baseLine:(baseLine+dataLngth-1));  %raw baseline data
+        baseDiff = (baseLine-dataLngth);    %the number of samples missing from the start of data
+        
+        if baseDiff<0
+            curData = [zeros(1,(abs(baseDiff)+1)) curData];
+            baseLine = baseLine+abs(baseDiff)+1;
+        end
+        
+        ECG.baseLineData = curData((baseLine-dataLngth):(baseLine-1));  %raw baseline data
         %Find the Bpm of data
-        locs =peakPick(ECG.baseLineData,curSubj(1:end-4));
+        locs =peakPick(ECG.baseLineData,[curSubj(1:end-4) ' baseline']);
         if locs == 999
             break
         end

@@ -21,7 +21,7 @@ function breath_preProc(varargin)
 %% Input Parameters
 p = inputParser;
 
-defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\NI\subjData\';
+defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\subjData\';
 defaultStart= 1;
 defaultSkip = true;
 defaultStartName = '';
@@ -113,11 +113,13 @@ for i = z:numel(fFiles)
         %% Main for loop
         
         % n is each block
+
         for n = 1:numel(RespRate.allData)
             % Current block of 5
             % Shorten to 135 s long
             temp = RespRate.allData{n};
-           
+             %temp = -1*RespRate.allData{n};  %in case you need to invert
+            
             %Find the Bpm of data
             [minL, maxL] =respPick(temp,[curSubj(1:end-4) '_B' num2str(n)]);
             if minL == 999
@@ -126,7 +128,8 @@ for i = z:numel(fFiles)
             
             RespRate.locsMin(1,n) = {minL};
             RespRate.locsMax(1,n) = {maxL};
-             
+             findpeaks
+            
         end
         if minL == 999
             break

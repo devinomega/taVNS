@@ -21,11 +21,12 @@ function breathBaselinePreProc(varargin)
 %% Input Parameters
 p = inputParser;
 
-defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\NI\subjData\';
-defaultStart= 1;
-defaultSkip = true;
-defaultStartName = '';
+defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\subjData\';   % where the files come from
+defaultStart= 1;    %which file number to start at 
+defaultSkip = true; %y/n skip files that already have the data in it
+defaultStartName = '';  %name of subject
 
+%add these parameters based on a parser 
 addParameter(p,'filePath',defaultPath,@ischar);
 addParameter(p,'start',defaultStart,@isnumeric)
 addParameter(p,'startName',defaultStartName,@ischar)
@@ -116,8 +117,16 @@ for i = z:numel(fFiles)
         if blDiff < 0 
             baseLine = baseLine+abs(blDiff);
         end
+        
+        if baseLine-dataLngth == 0 
+            blindex = 1;
+            RespRate.baseLineData = curData((baseLine-dataLngth):(baseLine-1));
+      
+        else 
+          
         RespRate.baseLineData = curData((baseLine-dataLngth):(baseLine-1));  %raw baseline data
-        %% Main for loop           
+        end
+        %% Main for loop
             %Find the Bpm of data
             [minL, maxL] =respPick(RespRate.baseLineData,[curSubj(1:end-4) ' Baseline']);
             if minL == 999

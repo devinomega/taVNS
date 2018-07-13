@@ -21,7 +21,7 @@ function ECG_preProc(varargin)
 %% Input Parameters
 p = inputParser;
 
-defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\NI\subjData\';
+defaultPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\subjData\';
 defaultStart= 1;
 defaultSkip = true;
 defaultStartName = '';
@@ -50,20 +50,19 @@ end
 
 %Segmenting
 dataLngth = 135*2000;
-%Filter
-sampleRate = 2000; % Hz
-lowEnd = .5; % Hz
-highEnd = 15; % Hz
 %AVG BPM
-wndwsAvg = [[5;15;75], [15;75;125]];   %Time bins
+wndwsAvg = [[5;15;75], [15;75;135]];   %Time bins
 wndwSz = diff(wndwsAvg,1,2);    %length of time bins
 %AVG BPM 5 second bins
-wndwsAvg_5 = [[5, 15:5:120]', [15, 20:5:125]'];   %Time bins
+wndwsAvg_5 = [[0:5:130]', [5:5:135]'];   %Time bins
 wndwSz_5 = diff(wndwsAvg_5,1,2);    %length of time bins
 %Max/Min analysis
 maxDiff = 0;    %Start point for max
 minDiff = 300;  %Start point for min
 ppWndws = {[15 75] [75 115]};   %Window of interst
+%HRV 15 second bins
+wndwsAvg_15 = [[0:15:130]', [15:15:135]'];   %Time bins
+wndwSz_15 = diff(wndwsAvg_15,1,2);    %length of time bins
 %% Warnings
 % supress this warning about loading a variablethat's not there
 warning('off', 'MATLAB:load:variableNotFound')
@@ -126,7 +125,7 @@ for i = z:numel(fFiles)
         % ==================================================================
         %     ECG.AvgPartBPM = zeros(5,3); % Avg BPM for [pre stim post] across a fixed window(include fractional beats)
         ECG.AvgBPM = zeros(5,3); % Avg BPM for [pre stim post] across a fixed window
-        ECG.AvgBPM_5 = zeros(5,23); % Avg BPM for [pre stim post] across a fixed window
+        ECG.AvgBPM_5 = zeros(5,27); % Avg BPM for [pre stim post] across a fixed window
         ECG.minBPM = zeros(5,6);  % Min BPM in a sliding mindow for stim and post baseline corrected (include fractional beats)
         ECG.maxBPM = zeros(5,6);   % same with min (first 3 are stim, second 3 are post)
         ECG.hrVarData = zeros(5,3); %heart rate variablity for [pre stim post]
@@ -139,22 +138,20 @@ for i = z:numel(fFiles)
             % Current block of 5
             % Shorten to 135 s long
             temp = ECG.allData{n};
-            temp= temp(1:270000);
-%             
-%             filterOrder = 2; % Filter order (e.g., 2 for a second-order Butterworth filter). Try other values too
-%             [b, a] = butter(filterOrder, [lowEnd highEnd]/(sampleRate/2)); % Generate filter coefficients
-%             filtData = filtfilt(b, a,temp); % Apply filter to data using zero-phase filtering
+            
+            %In case you need to  invert...
+%             temp = temp*-1;
             
             %Find the Bpm of data
-%             locs =peakPick(filtData,[curSubj(1:end-4) '_B' num2str(n)]);
-            locs =peakPick(temp,[curSubj(1:end-4) '_B' num2str(n)]);
+            locs =peakPick(temp,[curSubj(1:end-4) '_B' num2str(n)]);           
             if locs == 999
                 break
             end
             
-            ECG.locsData(n) = {locs};
-            
             if ~isnan(locs)
+                secTime  = (0:(135*2000)-1)/2000;
+                locs = secTime(locs);   %Convert to seconds (from samples)
+                ECG.locsData(n) = {locs};
                 % ==================================================================
                 % Average BPM across all periods (pre, stim,post)
                 % ==================================================================

@@ -11,9 +11,9 @@ updateECG
 
 %% ECG
 %heart rate picking for the five blocks before during and after stim
-ECG_preProc('skip',false,'startName','TV_20_02')
+ECG_preProc('skip',false)
 % heart rate picking for the baseline 2.5 min
-ECGbaselinePreProc('skip',false,'startName','TV_27_04')
+ECGbaselinePreProc('skip',false,'startName','TV_02_04')
 %heart rate picking for the five blocks post number rating
 ECGpostPreProc('skip',false,'startName','TV_02_01')
 %% Resp
