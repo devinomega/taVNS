@@ -16,7 +16,7 @@ Git setup
 2) Download GitHub for your computer
 3) Open a command window
 
-Maintaenence
+Maintenance
 1) git pull
 2) git add -A
 3) git commit -m "what I did"
