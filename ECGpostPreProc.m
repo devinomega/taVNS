@@ -144,7 +144,7 @@ for i = z:numel(fFiles)
         ECG.postRMSSD_15 =  zeros(5); %Root mean square of the successive differnce post 15 second bins
         ECG.postpRR50_15 = zeros(5); %RMSSD for post 15 second bins
         %% Loop throught he blocks
-        for n = 1:numel(ECG.allData)
+        for n = 1:numel(  )
             % Current block of 5
             % Shorten to 30s long
             temp = ECG.allData{n};
