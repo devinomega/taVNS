@@ -60,7 +60,7 @@ wndwSz_5 = diff(wndwsAvg_5,1,2);    %length of time bins
 %Max/Min analysis
 maxDiff = 0;    %Start point for max
 minDiff = 300;  %Start point for min
-ppWndws = {0 ,30};   %Window of interst
+ppWndws = [10*10^-10, 30-(10*10^-10)];   %Window of interst
 %HRV 15 second bins
 wndwsAvg_15 = [[0 15]', [15 30]'];   %Time bins
 wndwSz_15 = diff(wndwsAvg_15,1,2);    %length of time bins
@@ -125,17 +125,15 @@ for i = z:numel(fFiles)
         
         %Data
         curData = double(data.data(33,:)); %Raw ECG
-        
         postDiff = numel(curData)-(post(5)+dataLngth);    %the number of samples missing from the end of data
         
         if postDiff<0
             curData = [curData zeros(1,(abs(baseDiff)+1))];
             baseLine = baseLine+abs(baseDiff)+1;
         end
-        
         ECG.postData = cellfun(@(i) curData(i:(i+dataLngth-1)), num2cell(post),'UniformOutput',false);
         
-         % ==================================================================
+        % ==================================================================
         % Outcome Measures
         % ==================================================================
         ECG.postLocsData = cell(1,5);   %Locations of peaks
