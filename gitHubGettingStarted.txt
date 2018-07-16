@@ -22,3 +22,24 @@ Maintaenence
 3) git commit -m "what I did"
 4) git push (pushes it to the cloooooud)
 
+Merge probelems (multiple changes to the same file
+1) Commit the change (your file is the correct one
+git commit -m "My message"
+2) Stash it
+Stashing acts as a stack, where you can push changes, and you pop them in reverse order.
+git stash
+
+Do the merge, and then pull the stash:
+git stash pop
+
+%%Make changes to the merge file with issues and then
+git add filename
+git commit -m "message"
+
+3) Discard the local changes
+
+using git reset --hard
+or git checkout -t -f remote/branch
+
+Or: Discard local changes for a specific file
+using git checkout filename
