@@ -151,7 +151,7 @@ for i = z:numel(fFiles)
         ECG.posthrVarData_15 = zeros(5,2); %heart rate variablity for post 15 second bins
         ECG.postRMSSD_15 =  zeros(5,2); %Root mean square of the successive differnce post 15 second bins
         ECG.postpRR50_15 = zeros(5,2); %RMSSD for post 15 second bins
-        %% Loop throught he blocks
+        %% Loop through the blocks
         for n = 1:numel(ECG.postData)
             % Current block of 5
             % Shorten to 30s long
