@@ -130,7 +130,7 @@ for i = z:numel(fFiles)
         %adding padding
         if postDiff<0
             curData = [curData zeros(1,(abs(postDiff)+1))];
-%             post(5) = post(5)+abs(postDiff)+1;
+            post(5) = post(5)+abs(postDiff)+1;
         end
         
         ECG.postData = cellfun(@(i) curData(i:(i+dataLngth-1)), num2cell(post),'UniformOutput',false);

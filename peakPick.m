@@ -119,6 +119,7 @@ else
     
     %Plot the raw ECG signal   
     handles.ax(2) = handles.rawEEG_graph;
+%     plot(handles.rawEEG_graph, handles.secTime,handles.filtData ,'Parent',handles.ax(2)) 
     plot(handles.rawEEG_graph, handles.secTime,handles.rawData,'Parent',handles.ax(2))
     title(handles.rawEEG_graph,'Raw ECG')
     xlabel(handles.rawEEG_graph,'Seconds')
@@ -126,6 +127,7 @@ else
     
 %   Plot the Peaks for the raw ECG data
     plot(handles.rawEEG_graph,handles.secTime(handles.locs),handles.rawData(handles.locs),'ro','Parent',handles.ax(2))
+%     plot(handles.rawEEG_graph,handles.secTime(handles.locs),handles.filtData(handles.locs),'ro','Parent',handles.ax(2))
     xlabel(handles.rawEEG_graph,'Seconds')
     hold(handles.rawEEG_graph,'off')
     

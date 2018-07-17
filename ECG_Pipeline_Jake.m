@@ -10,7 +10,7 @@ updateTables
 
 updateECG
 
-ECG_preProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false,'startName','TV_11_07')
+ECGpostPreProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false,'startName','TV_20_03')
 %% heart rate picking for the five blocks^
 breath_preProc('filePath', 'C:\Users\bikson\Documents\taVNS_data\subjData\', 'skip',false)
 %%resperation picking for the five blocks^
