@@ -27,11 +27,11 @@ function varargout = respPick(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @respPick_OpeningFcn, ...
-                   'gui_OutputFcn',  @respPick_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @respPick_OpeningFcn, ...
+    'gui_OutputFcn',  @respPick_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -53,12 +53,12 @@ function respPick_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to respPick (see VARARGIN)
 
 handles.break = 0;  %if someone closes the figure then you want to break out of ECG_preProc
-set(0,'userdata',{[] []});   %reset the root userdata
+set(0,'userdata',{[] {}});   %reset the root userdata
 
 % Check for correct inputs
-if nargin< 4    
+if nargin< 4
     plot(rand(5));  %plot something random if not input
-else 
+else
     handles.rawData = varargin{1};
     handles.rawTime  = (0:numel(handles.rawData)-1);
     handles.secTime  = (0:numel(handles.rawData)-1)/2000;
@@ -68,7 +68,7 @@ else
     highEnd = 1;
     f_s = 2000; %sampling frequency
     filterOrder = 2; % Filter order (e.g., 2 for a second-order Butterworth filter). Try other values too
-%     [b, a] = butter(filterOrder, [0.5 highEnd]/(f_s/2),'low'); % Generate filter coefficients
+    %     [b, a] = butter(filterOrder, [0.5 highEnd]/(f_s/2),'low'); % Generate filter coefficients
     [b, a] = butter(filterOrder, [0.05 highEnd]/(f_s/2)); % Generate filter coefficients
     handles.filtData = filtfilt(b, a, baseLnCor); % Apply filter to data using zero-phase filtering
     
@@ -86,14 +86,14 @@ else
     set(dcm_obj,'UpdateFcn',@myupdatefcn);
     hold(handles.transform_graph,'on')
     
-%   Plot the inhilation 
+    %   Plot the inhilation
     plot(handles.transform_graph,handles.secTime(handles.locsMax),handles.peaksMax,'ro','Parent',handles.ax(1))
     %Plot the exhalation
     plot(handles.transform_graph,handles.secTime(handles.locsMin),handles.peaksMin,'mo','Parent',handles.ax(1))
     xlabel(handles.transform_graph,'Seconds')
     hold(handles.transform_graph,'off')
-%     
-    %Plot the raw respiration signal   
+    %
+    %Plot the raw respiration signal
     handles.ax(2) = handles.rawEEG_graph;
     plot(handles.rawEEG_graph, handles.secTime,handles.rawData,'Parent',handles.ax(2))
     title(handles.rawEEG_graph,'Raw resp')
@@ -103,7 +103,7 @@ else
     set(dcm_obj,'UpdateFcn',@myupdatefcn);
     hold(handles.rawEEG_graph,'on')
     
-    %   Plot the inhilation 
+    %   Plot the inhilation
     plot(handles.rawEEG_graph,handles.secTime(handles.locsMax),handles.rawData(handles.locsMax),'ro','Parent',handles.ax(2))
     %Plot the exhalation
     plot(handles.rawEEG_graph,handles.secTime(handles.locsMin),handles.rawData(handles.locsMin),'mo','Parent',handles.ax(2))
@@ -115,7 +115,7 @@ else
     set(gcf,'toolbar','figure');    %Enable zoom and data cursor (all I care about)
     
     handles.AddPoints = [];   %The points added manually
-%     pos = get(0,'userdata');
+    %     pos = get(0,'userdata');
 end
 
 %If there's a subject name - put it in the title
@@ -138,7 +138,7 @@ uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = respPick_OutputFcn(hObject, eventdata, handles) 
+function varargout = respPick_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -187,11 +187,11 @@ cla;
 
 pntData = get(0,'userdata');  %Get the input from the graph
 cPos = pntData{1};   %all x positions
-cFig = pntData{2};  %which figure it came from 
+cFig = pntData{2};  %which figure it came from
 handles.AddPoints =[handles.AddPoints;cPos];
 curData = get(handles.PointTable,'Data');   %get all the current pointtable data
 
-for p = 1:numel(cFig)
+for p = 1:numel(cPos(:,1))
     tempFig = cFig{p};
     pos = cPos(p,:);
     % determine which graph the point was drawn from
@@ -203,9 +203,9 @@ for p = 1:numel(cFig)
         %otherwise keep the value
         addPeak = pos(2);
     end
-
+    
     newData = sort([curData(:,1); pos(1)]); %add the new position and sort it
-    curData = [newData [(60./diff(newData));NaN]];  %recalculate the BPM    
+    curData = [newData [(60./diff(newData));NaN]];  %recalculate the BPM
     nn = curData(logical(abs(diff(curData(:,1)<pos(1)))),1);   %identify the point just prior to the one added
     
     % If the point prior was a Max - add new point as a Min, and vice versa
@@ -237,7 +237,7 @@ hold off
 
 axes(handles.rawEEG_graph);
 
-%Plot the raw Resp signal   
+%Plot the raw Resp signal
 plot(handles.rawEEG_graph, handles.secTime,handles.rawData,'Parent',handles.ax(2))
 zoom reset
 set(handles.ax(2),'XLim',xlim)
@@ -252,7 +252,7 @@ xlabel(handles.rawEEG_graph,'Seconds')
 hold(handles.rawEEG_graph,'off')
 
 set(handles.PointTable,'Data',curData)  %Set the point table again
-set(0,'userdata',{[] []});  %reset the user data 
+set(0,'userdata',{[] {}});  %reset the user data
 handles.output = {handles.locsMin handles.locsMax}; %Update the output
 
 guidata(hObject, handles);
@@ -297,7 +297,7 @@ hold off
 
 axes(handles.rawEEG_graph);
 
-%Plot the raw Respsignal   
+%Plot the raw Respsignal
 plot(handles.rawEEG_graph, handles.secTime,handles.rawData,'Parent',handles.ax(2))
 title(handles.rawEEG_graph,'Raw resp')
 xlabel(handles.rawEEG_graph,'Seconds')
@@ -386,26 +386,26 @@ try
     rows = handles.rejectPtsData.Indices;
 catch ME
     if (strcmp(ME.identifier,'MATLAB:nonExistentField'))
-    	if ~isempty(pntData{1})
+        if ~isempty(pntData{1})
             rows = pntData{1}(:,1);   %all x positions
             rows = dsearchn(curData(:,1),rows);
-%         cFig = pntData{2};  %which figure it came from 
+            %         cFig = pntData{2};  %which figure it came from
         else
             eFlag = 0;
         end
     else
-        eFlag = 0;  %no points selected and 
+        eFlag = 0;  %no points selected and
     end
 end
 
 if eFlag
     indxMax = logical(sum(handles.secTime(handles.locsMax) == curData(rows(:,1),1),1));
     indxMin = logical(sum(handles.secTime(handles.locsMin) == curData(rows(:,1),1),1));
-
+    
     if sum(indxMax) >= 1
-    % Update figure and table
-    handles.locsMax(indxMax) = [];   %Locs w/ point removed
-    handles.peaksMax(indxMax) = [];  %amp of point removed
+        % Update figure and table
+        handles.locsMax(indxMax) = [];   %Locs w/ point removed
+        handles.peaksMax(indxMax) = [];  %amp of point removed
     end
     if sum(indxMin) >= 1
         % Update figure and table
@@ -425,13 +425,18 @@ if eFlag
     %replot peak points
     plot(handles.transform_graph,handles.secTime(handles.locsMax),handles.peaksMax,'ro')
     plot(handles.transform_graph,handles.secTime(handles.locsMin),handles.peaksMin,'mo')
-    % zoom on
+    zoom reset
+    set(handles.ax(1),'XLim',xlim)
+    set(handles.ax(1),'YLim',ylim)
     xlabel('Seconds')
     hold off
     
     axes(handles.rawEEG_graph);
     %Plot the raw Respsignal
     plot(handles.rawEEG_graph, handles.secTime,handles.rawData,'Parent',handles.ax(2))
+    zoom reset
+    set(handles.ax(1),'XLim',xlim)
+    set(handles.ax(1),'YLim',ylim)
     title(handles.rawEEG_graph,'Raw resp')
     xlabel(handles.rawEEG_graph,'Seconds')
     dcm_obj = datacursormode(gcf);  %may not work
@@ -447,7 +452,7 @@ if eFlag
     
     %Update output
     handles.output = {handles.locsMin handles.locsMax};
-    set(0,'userdata',{[] []});  %reset the point selection
+    set(0,'userdata',{[] {}});  %reset the point selection
 end
 guidata(hObject,handles)
 
@@ -461,19 +466,10 @@ handles.rejectPtsData = eventdata;
 guidata(hObject, handles);
 
 function [txt, curFig] = myupdatefcn(~, event_obj)
-    temp = get(0,'userdata');
-    %Fix - if point has previously been selected, remove from list
-	unslctPnt = (event_obj.Position == temp{1});
-    if sum(event_obj.position == temp{1})
-        temp{1}(unslctPnt) = [];
-        temp{2}(unslctPnt) = [];
-        pos = temp{1};
-        curFig = temp{2};
-    else
-        pos = [temp{1};event_obj.Position];
-        a = get(gca,'Title');
-    %   disp(['You clicked X: ',num2str(handles.pos(1)),', Y: ',num2str(handles.pos(2))]);
-        txt = pos(1);
-        curFig = {get(a,'String');temp{2}};
-    end
-        set(0,'userdata',{pos, curFig});
+temp = get(0,'userdata');
+pos = [temp{1};event_obj.Position];
+a = get(gca,'Title');
+%   disp(['You clicked X: ',num2str(handles.pos(1)),', Y: ',num2str(handles.pos(2))]);
+txt = pos(1);
+cFig = [temp{2};get(a,'String')];
+set(0,'userdata',{pos cFig});
