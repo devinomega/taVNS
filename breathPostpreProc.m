@@ -1,5 +1,5 @@
-function breath_preProc(varargin)
-%% RespRate_preProc
+function breathPostpreProc(varargin)
+%% breathPostpreProc
 %
 % Process .cnt files and extract respiration info
 %
@@ -15,7 +15,7 @@ function breath_preProc(varargin)
 % MAT file - basic information form the run
 %
 % Older files had a different file length - this accounts for this
-% oldFileAdd = 120000; 
+% oldFileAdd = 120000;
 % xx = (0:(135*2000-1))/2000;
 
 %% Input Parameters
@@ -47,10 +47,20 @@ if ~strcmp(startName,'')
 end
 
 %Segmenting
-dataLngth = 135*2000;
-%Filter
-sampleRate = 2000; % Hz
-highEnd = 15; % Hz
+dataLngth = 30*2000;
+%AVG BPM
+wndwsAvg = [0, 30];   %Time bins
+wndwSz = diff(wndwsAvg,1,2);    %length of time bins
+%AVG BPM 5 second bins
+wndwsAvg_5 = [[0:5:25]', [5:5:30]'];   %Time bins
+wndwSz_5 = diff(wndwsAvg_5,1,2);    %length of time bins
+%Max/Min analysis
+maxDiff = 0;    %Start point for max
+minDiff = 300;  %Start point for min
+ppWndws = {0 ,30};   %Window of interst
+%HRV 15 second bins
+wndwsAvg_15 = [[0 15]', [15 30]'];   %Time bins
+wndwSz_15 = diff(wndwsAvg_15,1,2);    %length of time bins
 %% Warnings
 % supress this warning about loading a variablethat's not there
 warning('off', 'MATLAB:load:variableNotFound')
@@ -76,33 +86,58 @@ for i = z:numel(fFiles)
     else
         tmp = load(curMat,'RespRate');
         if isfield(tmp, 'RespRate')
-            if skip
-                continue
+            RespRate=tmp.RespRate;
+            if isfield(tmp.RespRate,'baseRespRate')
+                if skip
+                    continue
+                else
+                    rsp = questdlg(['There''s already a baseline variable for Respiration for ' curSubj(1:end-4)], ...
+                        'Mat file', ...
+                        'Next', 'Overwrite','Cancel','Next');
+                    if strcmp(rsp, 'Next')
+                        continue
+                    elseif strcmp(rsp, 'Cancel') || isempty(rsp)
+                        break
+                    end
+                end
             else
-                rsp = questdlg(['There''s already a RespRate variable for ' curSubj(1:end-4)], ...
-                    'Mat file', ...
-                    'Next', 'Overwrite','Cancel','Next');
+                rsp = questdlg(['There is no Resp field for ' curSubj(1:end-4)], ...
+                'Resp missing', ...
+                'Next', 'Quit','Next');
                 if strcmp(rsp, 'Next')
                     continue
-                elseif strcmp(rsp, 'Cancel') || isempty(rsp)
+                elseif strcmp(rsp, 'Quit')
                     break
                 end
             end
         end
     end
+         
     
     data = pop_loadeep_v4([fPath curSubj]);   %load their eeg data
     
     if ~isempty(data.event)
         % From pre
-        pre = [data.event(~cellfun(@isempty,regexp({data.event.type}, ...
+        post = [data.event(~cellfun(@isempty,regexp({data.event.type}, ...
             '1\d{1}1'))).latency];
 
         %Data
         curData = double(data.data(34,:)); %Raw RespRate
-        RespRate.locsMin = cell(1,5);   %Locations of troughs 
-        RespRate.locsMax = cell(1,5);   %Locations of peaks
-        RespRate.allData = cellfun(@(i) curData(i:(i+dataLngth-1)), num2cell(pre),'UniformOutput',false);
+        RespRate.postMin = cell(1,5);   %Locations of troughs 
+        RespRate.postMax = cell(1,5);   %Locations of peaks
+        RespRate.postData = cellfun(@(i) curData(i:(i+dataLngth-1)), num2cell(post),'UniformOutput',false);
+        
+        postDiff = numel(curData)-(post(5)+dataLngth);    %the number of samples missing from the end of data
+
+        %adding padding
+        if postDiff<0
+            curData = [curData zeros(1,(abs(postDiff)+1))];
+  %         post(5) = post(5)+abs(postDiff)+1;
+        end
+        
+       
+        %%
+        
         
         % ==================================================================
         % Outcome Measures
@@ -114,10 +149,11 @@ for i = z:numel(fFiles)
         
         % n is each block
 
-        for n = 1:numel(RespRate.allData)
+        for n = 1:numel(RespRate.postData)
             % Current block of 5
             % Shorten to 135 s long
-            temp = RespRate.allData{n};
+            temp = RespRate.postData{n};
+            temp = temp(1:60000);
              %temp = -1*RespRate.allData{n};  %in case you need to invert
             
             %Find the Bpm of data

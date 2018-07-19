@@ -37,7 +37,6 @@ fPath = p.Results.filePath;
 z= p.Results.start;
 skip = p.Results.skip;
 startName = p.Results.startName;
-
 %% Parameters for analysis
 %General
 fFiles = dir([fPath '\TV*.cnt']);
