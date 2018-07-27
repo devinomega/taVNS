@@ -128,8 +128,6 @@ for i = z:numel(fFiles)
             
             RespRate.locsMin(1,n) = {minL};
             RespRate.locsMax(1,n) = {maxL};
-             
-            
         end
         if minL == 999
             break

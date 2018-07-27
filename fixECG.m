@@ -3,7 +3,7 @@
 % Messed up HR average!
 
 %
-fPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\NI\subjData\';
+fPath = 'C:\Users\devinomega\Dropbox\MATLAB\tVNS\taVNS_SubjData071118\';
 % fPath='C:\Users\Dadair\Dropbox\MATLAB\tVNS\NI\subjData\';
 fFiles = dir([fPath '\BIGMAT*.mat']);
 %AVG BPM
@@ -45,8 +45,6 @@ for i = 1:numel(fFiles)
                 % ==================================================================
                 % Average BPM across all periods (pre, stim,post)
                 % ==================================================================
-%                 wndwsAvg = [[10;15;75], [15;75;125]];   %Time bins
-%                 wndwSz = diff(wndwsAvg,1,2);    %length of time bins
 
                 allLocs = locs >= wndwsAvg(:,1) & locs < wndwsAvg(:,2); %Find the locs (peaks) within each bin
                 splLocs = allLocs; %Added beat before and after
@@ -85,7 +83,7 @@ for i = 1:numel(fFiles)
                 
                 curData.ECG.AvgBPM_5(n,:) = temp;   
                 % ==================================================================
-                % Average BPM across 5 sec bins
+                % Median BPM across 5 sec bins
                 % ==================================================================
 %                 wndwsAvg = [[0:5:120]', [5:5:125]'];   %Time bins
 %                 wndwSz = diff(wndwsAvg,1,2);    %length of time bins

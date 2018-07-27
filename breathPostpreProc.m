@@ -143,8 +143,8 @@ for i = z:numel(fFiles)
         % Outcome Measures
         % ==================================================================
         %     RespRate.AvgPartBPM = zeros(5,3); % Avg BPM for [pre stim post] across a fixed window(include fractional beats)
-        RespRate.min = zeros(5,6);  % Troughs of respiration rate 
-        RespRate.max= zeros(5,6);   % same with min (first 3 are stim, second 3 are post)
+%         RespRate.min = zeros(5,6);  % Troughs of respiration rate 
+%         RespRate.max= zeros(5,6);   % same with min (first 3 are stim, second 3 are post)
         %% Main for loop
         
         % n is each block
@@ -162,8 +162,8 @@ for i = z:numel(fFiles)
                 break
             end
             
-            RespRate.locsMin(1,n) = {minL};
-            RespRate.locsMax(1,n) = {maxL};
+            RespRate.postMin(1,n) = {minL};
+            RespRate.postMax(1,n) = {maxL};
              
             
         end
